@@ -12,8 +12,6 @@
 
 `Job text + CV → structured extraction → skill matching → score → cover letter → Google Sheets/manager notification`
 
-## Что показать работодателю
-
 Нажать одну кнопку, показать JSON-поля, процент совпадения и готовое персональное письмо.
 
 ## Стек
@@ -23,4 +21,3 @@ LLM API adapter, JSON, Google Sheets-ready schema, Telegram/email-ready notifica
 ## Ценность
 
 Сокращение первичного разбора кандидатов и более быстрый переход от вакансии к осмысленному отклику.
-
