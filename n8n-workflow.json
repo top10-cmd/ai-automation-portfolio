@@ -1,0 +1,14 @@
+{
+  "name": "LinguaDesk — Multilingual Support MVP",
+  "active": false,
+  "settings": {"executionOrder": "v1"},
+  "nodes": [
+    {"name":"Inbound Support Webhook","type":"n8n-nodes-base.webhook","typeVersion":2,"position":[0,0],"parameters":{"httpMethod":"POST","path":"linguadesk/support","responseMode":"responseNode"}},
+    {"name":"Normalize Request","type":"n8n-nodes-base.code","typeVersion":2,"position":[220,0],"parameters":{"jsCode":"return [{json:{text:$json.body?.text || $json.text || '', receivedAt:new Date().toISOString(), demo:true}}];"}},
+    {"name":"LLM Analyze + Draft","type":"n8n-nodes-base.httpRequest","typeVersion":4,"position":[470,0],"parameters":{"method":"POST","url":"={{$env.LLM_API_URL}}","sendHeaders":true,"headerParameters":{"parameters":[{"name":"Authorization","value":"=Bearer {{$env.LLM_API_KEY}}"}]},"sendBody":true,"jsonBody":"={{JSON.stringify({text:$json.text, output_language:'same_as_customer', operator_summary_language:'ru', schema:['language','category','urgency','sentiment','summary_ru','draft_reply']})}}"}},
+    {"name":"Operator Approval Queue","type":"n8n-nodes-base.webhook","typeVersion":2,"position":[720,0],"parameters":{"httpMethod":"POST","path":"linguadesk/approval"}},
+    {"name":"CRM Outbound Webhook","type":"n8n-nodes-base.httpRequest","typeVersion":4,"position":[970,0],"parameters":{"method":"POST","url":"={{$env.CRM_WEBHOOK_URL}}","sendBody":true,"jsonBody":"={{JSON.stringify({status:'approved',ticket:$json})}}"}}
+  ],
+  "connections": {"Inbound Support Webhook":{"main":[[{"node":"Normalize Request","type":"main","index":0}]]},"Normalize Request":{"main":[[{"node":"LLM Analyze + Draft","type":"main","index":0}]]},"LLM Analyze + Draft":{"main":[[{"node":"Operator Approval Queue","type":"main","index":0}]]},"Operator Approval Queue":{"main":[[{"node":"CRM Outbound Webhook","type":"main","index":0}]]}},
+  "meta":{"templateCredsSetupCompleted":false}
+}
