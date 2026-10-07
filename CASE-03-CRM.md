@@ -12,8 +12,6 @@
 
 `CRM/webhook → lead normalization → intent + priority → recommended next step → draft reply → CRM update/task`
 
-## Что показать работодателю
-
 Вставить запрос B2B-клиента, получить категорию, высокий приоритет, этап воронки, задачу менеджеру и черновик ответа.
 
 ## Стек
@@ -23,4 +21,3 @@ Webhooks, LLM API adapter, JSON, CRM API-ready payload, Google Sheets-ready log,
 ## Ценность
 
 Меньше потерянных лидов, единые правила приоритизации и более быстрая реакция отдела продаж.
-
