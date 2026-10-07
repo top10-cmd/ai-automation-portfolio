@@ -12,8 +12,6 @@
 
 `Inbound webhook → normalize → language/intent/priority/sentiment → draft reply → Russian summary → operator approval → CRM webhook → audit log`
 
-## Что показать работодателю
-
 Французский запрос о невозвращённой оплате, определённый язык, категория «возврат», русское резюме, черновик на французском и статус «Отправлено» после подтверждения.
 
 ## Стек
@@ -23,4 +21,3 @@ n8n, LLM API adapter, Webhooks, JSON schema, HTML/CSS/JavaScript, CRM-ready outb
 ## Ценность
 
 Меньше ручной классификации, быстрее первая реакция, единый контроль качества и прозрачный аудит действий оператора.
-
