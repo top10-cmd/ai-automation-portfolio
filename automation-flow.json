@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "kind": "documentation-not-n8n-import",
+  "name": "LinguaDesk actual automation contract",
+  "intake": { "method": "POST", "path": "/api/analyze", "requires": ["local session or API_TOKEN", "synthetic=true", "text"], "outputStatus": "review" },
+  "analysis": ["validate input", "mask email/phone/key patterns", "mock or OpenAI Responses", "validate live JSON schema", "save metadata"],
+  "humanReview": { "source": "operator UI", "method": "POST", "path": "/api/approve", "requires": ["id", "version", "decision"], "actions": ["edit", "reject", "approve"] },
+  "approval": { "withoutCRM": "approved_demo", "withCRM": "delivering", "approvalRequired": true },
+  "delivery": { "event": "support.approved", "idempotencyHeader": "Idempotency-Key: ticket.id", "http2xx": "delivered", "failureOrTimeout": "delivery_failed", "automaticRetry": false, "manualRetry": "same frozen payload and eventId" },
+  "storage": { "persistent": "metadata and event types only", "volatile": "summary and draft", "retention": "last 500 journal records; at most 200 active tickets per server run" }
+}

@@ -1,14 +1,135 @@
 {
-  "name": "LinguaDesk — Multilingual Support MVP",
+  "name": "LinguaDesk — authenticated intake (operator approval in UI)",
   "active": false,
-  "settings": {"executionOrder": "v1"},
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataSuccessExecution": "none",
+    "saveDataErrorExecution": "none",
+    "saveManualExecutions": false
+  },
   "nodes": [
-    {"name":"Inbound Support Webhook","type":"n8n-nodes-base.webhook","typeVersion":2,"position":[0,0],"parameters":{"httpMethod":"POST","path":"linguadesk/support","responseMode":"responseNode"}},
-    {"name":"Normalize Request","type":"n8n-nodes-base.code","typeVersion":2,"position":[220,0],"parameters":{"jsCode":"return [{json:{text:$json.body?.text || $json.text || '', receivedAt:new Date().toISOString(), demo:true}}];"}},
-    {"name":"LLM Analyze + Draft","type":"n8n-nodes-base.httpRequest","typeVersion":4,"position":[470,0],"parameters":{"method":"POST","url":"={{$env.LLM_API_URL}}","sendHeaders":true,"headerParameters":{"parameters":[{"name":"Authorization","value":"=Bearer {{$env.LLM_API_KEY}}"}]},"sendBody":true,"jsonBody":"={{JSON.stringify({text:$json.text, output_language:'same_as_customer', operator_summary_language:'ru', schema:['language','category','urgency','sentiment','summary_ru','draft_reply']})}}"}},
-    {"name":"Operator Approval Queue","type":"n8n-nodes-base.webhook","typeVersion":2,"position":[720,0],"parameters":{"httpMethod":"POST","path":"linguadesk/approval"}},
-    {"name":"CRM Outbound Webhook","type":"n8n-nodes-base.httpRequest","typeVersion":4,"position":[970,0],"parameters":{"method":"POST","url":"={{$env.CRM_WEBHOOK_URL}}","sendBody":true,"jsonBody":"={{JSON.stringify({status:'approved',ticket:$json})}}"}}
+    {
+      "id": "intake",
+      "name": "Synthetic Support Intake",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "linguadesk-synthetic-intake",
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "linguadesk/support",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      }
+    },
+    {
+      "id": "normalize",
+      "name": "Validate Synthetic Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ],
+      "parameters": {
+        "jsCode": "const b = $json.body || {}; if (b.synthetic !== true || typeof b.text !== 'string' || !b.text.trim() || b.text.length > 4000) throw new Error('Synthetic text is required (1–4000 characters)'); return [{json: {text: b.text, synthetic: true, languageHint: typeof b.languageHint === 'string' ? b.languageHint : ''}}];"
+      }
+    },
+    {
+      "id": "analysis",
+      "name": "Analyze via LinguaDesk API",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        0
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "={{ ($env.LINGUADESK_API_URL || 'http://127.0.0.1:3000') + '/api/analyze' }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ 'Bearer ' + $env.LINGUADESK_API_TOKEN }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}",
+        "options": {
+          "timeout": 25000,
+          "response": {
+            "response": {
+              "fullResponse": true,
+              "neverError": true,
+              "responseFormat": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "id": "response",
+      "name": "Return Review Ticket",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        730,
+        0
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json.body }}",
+        "options": {
+          "responseCode": "={{ $json.statusCode }}"
+        }
+      }
+    }
   ],
-  "connections": {"Inbound Support Webhook":{"main":[[{"node":"Normalize Request","type":"main","index":0}]]},"Normalize Request":{"main":[[{"node":"LLM Analyze + Draft","type":"main","index":0}]]},"LLM Analyze + Draft":{"main":[[{"node":"Operator Approval Queue","type":"main","index":0}]]},"Operator Approval Queue":{"main":[[{"node":"CRM Outbound Webhook","type":"main","index":0}]]}},
-  "meta":{"templateCredsSetupCompleted":false}
+  "connections": {
+    "Synthetic Support Intake": {
+      "main": [
+        [
+          {
+            "node": "Validate Synthetic Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Synthetic Input": {
+      "main": [
+        [
+          {
+            "node": "Analyze via LinguaDesk API",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze via LinguaDesk API": {
+      "main": [
+        [
+          {
+            "node": "Return Review Ticket",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": false
+  }
 }

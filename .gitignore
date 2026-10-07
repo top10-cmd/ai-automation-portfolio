@@ -1,0 +1,9 @@
+.env
+.env.*
+!.env.example
+.data/
+.test-data/
+*.log
+node_modules/
+.DS_Store
+npm-debug.log*
