@@ -1,1 +1,55 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AI HR Assistant</title><style>body{margin:0;background:#f5f7fb;color:#17243a;font:14px system-ui,sans-serif}.wrap{max-width:1000px;margin:auto;padding:32px 18px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.brand{font-size:20px;font-weight:800}.badge{padding:7px 10px;border-radius:99px;background:#eef1ff;color:#5266d3;font-size:12px;font-weight:700}.grid{display:grid;grid-template-columns:1fr 1fr;gap:17px}.card{background:#fff;border:1px solid #e2e8f1;border-radius:17px;padding:21px}.card h2{margin-top:0;font-size:16px}.label{display:block;color:#6d7b90;font-size:12px;font-weight:700;margin:13px 0 7px}.area{width:100%;min-height:155px;border:1px solid #dce3ee;border-radius:10px;padding:12px;box-sizing:border-box;resize:vertical}.btn{width:100%;border:0;border-radius:10px;padding:12px;background:linear-gradient(100deg,#4e68ed,#7655df);color:#fff;font-weight:800;margin-top:14px;cursor:pointer}.json{background:#f7f8fc;border-radius:10px;padding:13px;line-height:1.7;color:#516078}.score{font-size:34px;font-weight:800;color:#20a06a}.letter{background:#f7f8fc;border-radius:10px;padding:13px;line-height:1.55;min-height:90px}.full{grid-column:1/-1}@media(max-width:750px){.grid{grid-template-columns:1fr}}</style></head><body><main class="wrap"><div class="top"><div class="brand">✦ AI HR Assistant</div><span class="badge">DEMO / MOCK MODE</span></div><div class="grid"><section class="card"><h2>Входные данные</h2><label class="label">Текст вакансии</label><textarea id="job" class="area">Junior Customer Support Specialist. Russian and English. Remote. Experience with clients, clear written communication, CRM skills are a plus.</textarea><label class="label">Текст резюме</label><textarea id="cv" class="area">Customer support operator with experience in written communication, Google Sheets, handling client requests and using AI tools. Russian native, English B1.</textarea><button class="btn" id="run">Разобрать вакансию и резюме →</button></section><section class="card"><h2>Структурированный результат</h2><div id="out"><p style="color:#748198">Нажмите кнопку, чтобы получить JSON-профиль, оценку совпадения и письмо.</p></div></section></div></main><script>const job=document.querySelector('#job'),cv=document.querySelector('#cv'),out=document.querySelector('#out');document.querySelector('#run').onclick=()=>{let score=Math.min(96,72+(cv.value.length%20));out.innerHTML=`<div class="json"><b>position:</b> Customer Support Specialist<br><b>format:</b> remote<br><b>languages:</b> Russian, English<br><b>skills:</b> support, CRM, written communication<br><b>experience:</b> junior / adjacent</div><p class="score">${score}% match</p><div class="letter"><b>Сопроводительное письмо</b><br><br>Здравствуйте! Меня заинтересовала вакансия Customer Support Specialist. У меня есть опыт письменного общения с клиентами, работы с информацией и цифровыми инструментами. Я внимательно отношусь к деталям, быстро осваиваю новые процессы и готов развиваться в международной поддержке.</div>`}</script></body></html>
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>AI HR Assistant — демо</title>
+  <style>
+    body{margin:0;background:#f5f7fb;color:#17243a;font:14px system-ui,sans-serif}.wrap{max-width:1000px;margin:auto;padding:32px 18px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}.brand{font-size:20px;font-weight:800}.badge{padding:7px 10px;border-radius:99px;background:#eef1ff;color:#5266d3;font-size:12px;font-weight:700}.grid{display:grid;grid-template-columns:1fr 1fr;gap:17px}.card{background:#fff;border:1px solid #e2e8f1;border-radius:17px;padding:21px}.card h2{margin-top:0;font-size:16px}.label{display:block;color:#6d7b90;font-size:12px;font-weight:700;margin:13px 0 7px}.area{width:100%;min-height:155px;border:1px solid #dce3ee;border-radius:10px;padding:12px;box-sizing:border-box;resize:vertical}.btn{width:100%;border:0;border-radius:10px;padding:12px;background:linear-gradient(100deg,#4e68ed,#7655df);color:#fff;font-weight:800;margin-top:14px;cursor:pointer}.json{background:#f7f8fc;border-radius:10px;padding:13px;line-height:1.7;color:#516078}.score{font-size:26px;font-weight:800;color:#20a06a}.muted{color:#748198;line-height:1.5}.letter{background:#f7f8fc;border-radius:10px;padding:13px;line-height:1.55;min-height:90px}@media(max-width:750px){.grid{grid-template-columns:1fr}}
+  </style>
+</head>
+<body>
+<main class="wrap">
+  <div class="top"><div class="brand">✦ AI HR Assistant</div><span class="badge">DEMO / MOCK MODE</span></div>
+  <div class="grid">
+    <section class="card">
+      <h2>Входные данные</h2>
+      <label class="label">Текст вакансии</label>
+      <textarea id="job" class="area">Junior Customer Support Specialist. Russian and English. Remote. Experience with clients, clear written communication, CRM skills are a plus.</textarea>
+      <label class="label">Текст резюме</label>
+      <textarea id="cv" class="area">Customer support operator with experience in written communication, Google Sheets, handling client requests and using AI tools. Russian native, English B1.</textarea>
+      <button class="btn" id="run">Разобрать вакансию и резюме →</button>
+    </section>
+    <section class="card"><h2>Структурированный результат</h2><div id="out"><p class="muted">Нажмите кнопку: демо извлечёт признаки из обоих текстов и покажет, какие требования подтверждены резюме.</p></div></section>
+  </div>
+</main>
+<script>
+const job=document.querySelector('#job'), cv=document.querySelector('#cv'), out=document.querySelector('#out');
+const groups=[
+  {label:'поддержка клиентов', words:['support','поддерж','клиент','customer','оператор']},
+  {label:'работа с CRM', words:['crm','salesforce','hubspot','битрикс','amo']},
+  {label:'письменная коммуникация', words:['written','communication','переписк','текст','письмен']},
+  {label:'английский язык', words:['english','англий','b1','b2','c1']},
+  {label:'русский язык', words:['russian','русск']},
+  {label:'удалённый формат', words:['remote','удалён','удален','дистанцион']},
+  {label:'работа с таблицами', words:['sheets','таблиц','excel','google docs']},
+  {label:'повар / кухня', words:['повар','cook','chef','кухн']},
+  {label:'бухгалтерия', words:['бухгалт','accountant','учёт','учет']}
+];
+const has=(text,words)=>words.some(word=>text.includes(word));
+const isNegated=(text,words)=>words.some(word=>new RegExp(`(?:без\\s+опыта|нет\\s+опыта|не\\s+работал\\w*|не\\s+имею)\\s+(?:\\S+\\s+){0,2}${word}`).test(text));
+const hasValid=(text,words)=>has(text,words)&&!isNegated(text,words);
+const role=(text)=>{if(hasValid(text,['повар','cook','chef','кухн']))return 'Повар / специалист кухни';if(hasValid(text,['бухгалт','accountant','учёт','учет']))return 'Бухгалтер';if(hasValid(text,['support','поддерж','customer','клиент']))return 'Специалист поддержки';if(hasValid(text,['crm','salesforce','hubspot']))return 'CRM-специалист';return 'Позиция не определена по ключевым словам'};
+document.querySelector('#run').onclick=()=>{
+  const j=job.value.toLowerCase(), c=cv.value.toLowerCase();
+  if(!j.trim()||!c.trim()){out.innerHTML='<p class="muted">Введите и текст вакансии, и текст резюме. Демо не делает выводов по пустым данным.</p>';return;}
+  const required=groups.filter(g=>has(j,g.words));
+  const matched=required.filter(g=>hasValid(c,g.words));
+  const missing=required.filter(g=>!hasValid(c,g.words));
+  const score=required.length?Math.round(matched.length/required.length*100):null;
+  const lines=(items)=>items.length?items.map(x=>`<span style="display:inline-block;background:#fff;border:1px solid #e2e8f1;border-radius:99px;padding:3px 8px;margin:2px 3px 2px 0">${x.label}</span>`).join(''):'<span class="muted">Не выделено</span>';
+  const facts=matched.map(x=>x.label).join(', ')||'совпадения не найдены';
+  out.innerHTML=`<div class="json"><b>Позиция:</b> ${role(j)}<br><b>Выделено требований:</b> ${required.length||'не выделены'}<br><b>Упоминаний в резюме:</b> ${matched.length}<br><b>Статус:</b> требует проверки человеком</div><p class="score">${score===null?'—':score+'%'} <span style="font-size:13px;color:#748198;font-weight:500">условное совпадение по ключевым словам, не итоговая оценка кандидата</span></p><p><b>Упоминания в резюме</b><br>${lines(matched)}</p><p><b>Нужно проверить вручную</b><br>${lines(missing)}</p><div class="letter"><b>Черновик сопроводительного письма</b><br><br>Здравствуйте! Меня заинтересовала позиция «${role(j)}». В резюме есть упоминания: ${facts}. Готов обсудить задачи, формат работы и подтвердить дополнительные навыки на коротком разговоре.<br><br><span class="muted">Демо использует простые правила и не принимает кадровых решений.</span></div>`;
+};
+</script>
+</body>
+</html>

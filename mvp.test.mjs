@@ -3,9 +3,9 @@ import assert from 'node:assert/strict';
 import { mkdirSync, mkdtempSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { once } from 'node:events';
-import { createApp, ROOT } from '../server.mjs';
-import { SAMPLES, mockAnalyze, newTicket, decide } from '../core.js';
-import { validateAnalysis, liveAnalyze } from '../providers.mjs';
+import { createApp, ROOT } from './server.mjs';
+import { SAMPLES, mockAnalyze, newTicket, decide } from './core.js';
+import { validateAnalysis, liveAnalyze } from './providers.mjs';
 
 const tempRoot = path.join(ROOT, '.test-data');
 mkdirSync(tempRoot, { recursive: true });
@@ -189,3 +189,4 @@ test('live mode errors do not create a ticket; result cannot bypass approval', a
   broken = false;
   assert.equal((await f.call('analyze', sample)).data.status, 'review');
 });
+
